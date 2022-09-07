@@ -1,0 +1,6 @@
+- docker exec -it <redis-container> bash
+- redis-cli
+> KEYS  *
+> TYPE <key>
+> HGETALL <h-key>
+> FLUSHALL
