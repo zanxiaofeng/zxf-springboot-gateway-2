@@ -54,6 +54,6 @@ public class ProfileController {
     private void logInfo(String method, HttpSession session) {
         String accessToken = SecurityUtils.getCurrentAccessToken();
         System.out.println("ProfileController::" + method + ", " + session.getId() + ", accessToken = " + accessToken);
-        SecurityUtils.setCurrentAccessToken(session.getId() + "-" + method);
+        SecurityUtils.setCurrentAccessToken(accessToken + "-" + method);
     }
 }

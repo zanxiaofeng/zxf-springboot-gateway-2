@@ -24,6 +24,7 @@ public class MyAuthentication implements Authentication {
         this.needSave = true;
         this.myUser = myUser;
         this.tokenId = UUID.randomUUID().toString();
+        this.setAccessToken(UUID.randomUUID().toString());
     }
 
     @Override

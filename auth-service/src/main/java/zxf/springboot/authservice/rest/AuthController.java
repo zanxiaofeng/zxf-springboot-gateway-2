@@ -69,6 +69,6 @@ public class AuthController {
     private void logInfo(String method, HttpSession session) {
         String accessToken = SecurityUtils.getCurrentAccessToken();
         System.out.println("AuthController::" + method + ", " + session.getId() + ", accessToken = " + accessToken);
-        SecurityUtils.setCurrentAccessToken(session.getId() + "-" + method);
+        SecurityUtils.setCurrentAccessToken(accessToken + "-" + method);
     }
 }
