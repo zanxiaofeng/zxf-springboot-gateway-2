@@ -7,6 +7,7 @@ import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFac
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import zxf.springboot.authentication.MyAuthentication;
 import zxf.springboot.gatewayservice.redis.RedisSecurityContextRepository;
@@ -29,7 +30,8 @@ public class E2ETrustTokenFilter extends AbstractGatewayFilterFactory<E2ETrustTo
         return (exchange, chain) -> {
             //Pre-process for request
             ServerHttpRequest.Builder builder = exchange.getRequest().mutate();
-            return ReactiveSecurityContextHolder.getContext().map(securityContext -> {
+            return ReactiveSecurityContextHolder.getContext()
+                    .defaultIfEmpty(SecurityContextHolder.createEmptyContext()).map(securityContext -> {
                         if (securityContext.getAuthentication() instanceof MyAuthentication) {
                             MyAuthentication myAuthentication = (MyAuthentication) securityContext.getAuthentication();
                             String accessToken = myAuthentication.getAccessToken();
