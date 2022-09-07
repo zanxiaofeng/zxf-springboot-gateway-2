@@ -9,6 +9,7 @@ import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.ServerAuthenticationEntryPoint;
 import org.springframework.security.web.server.authentication.RedirectServerAuthenticationEntryPoint;
+import zxf.springboot.gatewayservice.redis.RedisSecurityContextRepository;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,6 +19,9 @@ import java.util.List;
 public class SecurityConfig {
     @Autowired
     private SecurityProperties securityProperties;
+
+    @Autowired
+    RedisSecurityContextRepository redisSecurityContextRepository;
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
@@ -36,6 +40,8 @@ public class SecurityConfig {
 
         http.exceptionHandling()
                 .authenticationEntryPoint(authenticationEntryPoint());
+
+        http.securityContextRepository(redisSecurityContextRepository);
 
         return http.build();
     }

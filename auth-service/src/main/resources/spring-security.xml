@@ -17,7 +17,7 @@
         <intercept-url pattern="/auth/logon-failed" access="permitAll()"/>
         <intercept-url pattern="/**" access="isAuthenticated()"/>
         <logout logout-url="/auth/logout" invalidate-session="true" delete-cookies="Token"
-                sucess-handler-ref="redisLogoutHandler"/>
+                success-handler-ref="redisLogoutHandler"/>
         <request-cache ref="nullRequestCache"/>
         <csrf disabled="true"/>
     </http>
