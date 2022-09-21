@@ -2,6 +2,7 @@ package zxf.springboot.authentication;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.apache.catalina.SessionIdGenerator;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -23,7 +24,7 @@ public class MyAuthentication implements Authentication {
     public MyAuthentication(MyUser myUser) {
         this.needSave = true;
         this.myUser = myUser;
-        this.tokenId = UUID.randomUUID().toString();
+        this.tokenId = TokenIdGenerator.generateTokenId();
         this.setAccessToken(UUID.randomUUID().toString());
     }
 
