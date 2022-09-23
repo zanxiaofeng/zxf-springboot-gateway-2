@@ -1,5 +1,6 @@
-package zxf.springboot.authservice.security;
+package zxf.springboot.gateway.security;
 
+import io.lettuce.core.output.BooleanOutput;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.util.WebUtils;
@@ -7,14 +8,9 @@ import zxf.springboot.authentication.MyAuthentication;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.time.ZonedDateTime;
 
 public class SecurityUtils {
-    public static void logon(HttpServletResponse response, String username) {
-        MyAuthentication myAuthentication = new MyAuthentication(new MyAuthentication.MyUser(username));
-        SecurityContextHolder.getContext().setAuthentication(myAuthentication);
-        saveTokenIdToResponse(response, myAuthentication.getTokenId());
-    }
 
     public static String getTokenIdFromRequest(HttpServletRequest request) {
         Cookie tokenCookie = WebUtils.getCookie(request, "Token");
@@ -25,20 +21,25 @@ public class SecurityUtils {
         return request.getHeader("X-Token");
     }
 
-    public static void saveTokenIdToResponse(HttpServletResponse response, String tokenId) {
-        Cookie tokenCookie = new Cookie("Token", tokenId);
-        tokenCookie.setHttpOnly(true);
-        tokenCookie.setPath("/");
-        response.addCookie(tokenCookie);
-
-        response.addHeader("X-Token", tokenId);
-    }
-
     public static String getCurrentAccessToken() {
         if (!(SecurityContextHolder.getContext().getAuthentication() instanceof MyAuthentication)) {
             return null;
         }
         return ((MyAuthentication) SecurityContextHolder.getContext().getAuthentication()).getAccessToken();
+    }
+
+    public static String getCurrentRefreshToken() {
+        if (!(SecurityContextHolder.getContext().getAuthentication() instanceof MyAuthentication)) {
+            return null;
+        }
+        return ((MyAuthentication) SecurityContextHolder.getContext().getAuthentication()).getRefreshToken();
+    }
+
+    public static Boolean isCurrentAccessTokenExpired() {
+        if (!(SecurityContextHolder.getContext().getAuthentication() instanceof MyAuthentication)) {
+            return false;
+        }
+        return ((MyAuthentication) SecurityContextHolder.getContext().getAuthentication()).getAccessTokenExpiryTime().isAfter(ZonedDateTime.now());
     }
 
     public static void setCurrentAccessToken(String accessToken) {

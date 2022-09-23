@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -16,6 +17,8 @@ public class MyAuthentication implements Authentication {
     private MyUser myUser;
     private String tokenId;
     private String accessToken;
+    private String refreshToken;
+    private ZonedDateTime accessTokenExpiryTime;
 
     //Add for json serialize
     public MyAuthentication() {
@@ -25,7 +28,9 @@ public class MyAuthentication implements Authentication {
         this.needSave = true;
         this.myUser = myUser;
         this.tokenId = TokenIdGenerator.generateTokenId();
-        this.setAccessToken(UUID.randomUUID().toString());
+        this.refreshToken = UUID.randomUUID().toString();
+        this.accessToken = this.refreshToken + "-" + ZonedDateTime.now();
+        this.accessTokenExpiryTime = ZonedDateTime.now().plusMinutes(5);
     }
 
     @Override
@@ -92,12 +97,32 @@ public class MyAuthentication implements Authentication {
 
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
-        this.needSave = true;
     }
 
     @JsonIgnore
     public Boolean getNeedSave() {
         return needSave;
+    }
+
+    @JsonIgnore
+    public void setNeedSave(Boolean needSave) {
+        this.needSave = needSave;
+    }
+
+    public ZonedDateTime getAccessTokenExpiryTime() {
+        return accessTokenExpiryTime;
+    }
+
+    public void setAccessTokenExpiryTime(ZonedDateTime accessTokenExpiryTime) {
+        this.accessTokenExpiryTime = accessTokenExpiryTime;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
     @JsonSerialize
