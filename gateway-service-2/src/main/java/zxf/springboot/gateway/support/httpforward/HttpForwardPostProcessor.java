@@ -12,6 +12,10 @@ public interface HttpForwardPostProcessor extends UnaryOperator<ResponseEntity<b
         return (t) -> after.apply(this.apply(t));
     }
 
+    static HttpForwardPostProcessor noPostProcess() {
+        return responseEntity -> responseEntity;
+    }
+
     static HttpForwardPostProcessor defaultPostProcess() {
         return clearHeadersPostProcess(HttpHeaders.TRANSFER_ENCODING, HttpHeaders.CONTENT_LENGTH,
                 HttpHeaders.SET_COOKIE, HttpHeaders.SET_COOKIE2);

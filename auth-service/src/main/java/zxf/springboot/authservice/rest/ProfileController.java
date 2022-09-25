@@ -57,6 +57,5 @@ public class ProfileController {
         String accessToken = SecurityUtils.getCurrentAccessToken();
         System.out.println("ProfileController::" + method + ", " + session.getId() + ", accessToken = " + accessToken
                 + ", e2eToken = " + request.getHeader(HTTP_HEADER_NAME_X_E2E_Trust_Token));
-        SecurityUtils.setCurrentAccessToken(accessToken + "-" + method);
     }
 }

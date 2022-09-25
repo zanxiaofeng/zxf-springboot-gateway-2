@@ -11,12 +11,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import zxf.springboot.authentication.MyAuthentication;
 import zxf.springboot.gatewayservice.redis.RedisSecurityContextRepository;
-import zxf.springboot.gatewayservice.service.E2ETokenService;
+import zxf.springboot.gatewayservice.security.SecurityUtils;
+import zxf.springboot.gatewayservice.service.E2ETrustTokenService;
+
+import java.time.ZonedDateTime;
 
 @Component
 public class E2ETrustTokenFilter extends AbstractGatewayFilterFactory<E2ETrustTokenFilter.Config> {
     @Autowired
-    private E2ETokenService e2ETokenService;
+    private E2ETrustTokenService e2ETrustTokenService;
 
     @Autowired
     private RedisSecurityContextRepository redisSecurityContextRepository;
@@ -30,20 +33,21 @@ public class E2ETrustTokenFilter extends AbstractGatewayFilterFactory<E2ETrustTo
         return (exchange, chain) -> {
             //Pre-process for request
             ServerHttpRequest.Builder builder = exchange.getRequest().mutate();
-            return ReactiveSecurityContextHolder.getContext()
-                    .defaultIfEmpty(SecurityContextHolder.createEmptyContext()).map(securityContext -> {
+            return ReactiveSecurityContextHolder.getContext().defaultIfEmpty(SecurityContextHolder.createEmptyContext())
+                    .map(securityContext -> {
                         if (securityContext.getAuthentication() instanceof MyAuthentication) {
-                            MyAuthentication myAuthentication = (MyAuthentication) securityContext.getAuthentication();
-                            String accessToken = myAuthentication.getAccessToken();
-                            System.out.println("E2ETrustTokenFilter::" + exchange.getRequest().getPath() + ", " + accessToken);
-                            if (accessToken != null) {
-                                String e2eToken = e2ETokenService.getE2EToken(accessToken);
-                                builder.header(config.getE2eTokenHeader(), e2eToken);
-                                myAuthentication.setAccessToken("new-" + accessToken);
+                            if (SecurityUtils.isCurrentAccessTokenExpired(securityContext)) {
+                                SecurityUtils.setCurrentAccessToken(securityContext, SecurityUtils.getCurrentRefreshToken(securityContext) + "-" + ZonedDateTime.now());
                             }
+
+                            String accessToken = SecurityUtils.getCurrentAccessToken(securityContext);
+                            System.out.println("E2ETrustTokenFilter::" + exchange.getRequest().getPath() + ", " + accessToken);
+                            String e2eTrustToken = e2ETrustTokenService.getE2ETrustToken(accessToken);
+                            builder.header(config.getE2eTokenHeader(), e2eTrustToken);
                         }
                         return securityContext;
-                    }).flatMap(securityContext -> redisSecurityContextRepository.save(exchange, securityContext)
+                    })
+                    .flatMap(securityContext -> redisSecurityContextRepository.save(exchange, securityContext)
                             .thenReturn(securityContext))
                     .map(x -> exchange.mutate().request(builder.build()).build())
                     .flatMap(chain::filter);

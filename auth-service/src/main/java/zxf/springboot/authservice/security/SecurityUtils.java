@@ -27,8 +27,10 @@ public class SecurityUtils {
 
     public static void saveTokenIdToResponse(HttpServletResponse response, String tokenId) {
         Cookie tokenCookie = new Cookie("Token", tokenId);
-        tokenCookie.setHttpOnly(true);
+        tokenCookie.setMaxAge(3600 * 3);
         tokenCookie.setPath("/");
+        tokenCookie.setSecure(true);
+        tokenCookie.setHttpOnly(true);
         response.addCookie(tokenCookie);
 
         response.addHeader("X-Token", tokenId);
@@ -39,14 +41,6 @@ public class SecurityUtils {
             return null;
         }
         return ((MyAuthentication) SecurityContextHolder.getContext().getAuthentication()).getAccessToken();
-    }
-
-    public static void setCurrentAccessToken(String accessToken) {
-        if (!(SecurityContextHolder.getContext().getAuthentication() instanceof MyAuthentication)) {
-            return;
-        }
-        ((MyAuthentication) SecurityContextHolder.getContext().getAuthentication()).setAccessToken(accessToken);
-        ((MyAuthentication) SecurityContextHolder.getContext().getAuthentication()).setNeedSave(true);
     }
 
     public static MyAuthentication.MyUser getCurrentUser() {

@@ -9,7 +9,7 @@
         http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/security
         http://www.springframework.org/schema/security/spring-security.xsd">
-    <debug/>
+<!--    <debug/>-->
     <http use-expressions="true" entry-point-ref="authenticationEntryPoint"
           security-context-repository-ref="redisSecurityContextRepository">
         <intercept-url pattern="/auth/logon" access="permitAll()"/>
