@@ -28,7 +28,7 @@ public class ProfileController {
         ModelAndView modelAndView = new ModelAndView("home-page");
         modelAndView.addObject(MODEL_AND_VIEW_OBJECT_KEY_SITE_URL, siteUrl);
         modelAndView.addObject(MODEL_AND_VIEW_OBJECT_KEY_SESSION_ID, session.getId());
-        modelAndView.addObject(MODEL_AND_VIEW_OBJECT_KEY_PRINCIPAL, SecurityUtils.getCurrentUser());
+        modelAndView.addObject(MODEL_AND_VIEW_OBJECT_KEY_PRINCIPAL, SecurityUtils.getMyAuthentication().getMyUser());
         return modelAndView;
     }
 
@@ -47,8 +47,9 @@ public class ProfileController {
         logInfo("profile-form", request, session);
 
         //Will auto save
-        MyAuthentication.MyUser myUser = SecurityUtils.getCurrentUser();
-        myUser.setAge(age);
+        MyAuthentication myAuthentication = SecurityUtils.getMyAuthentication();
+        myAuthentication.getMyUser().setAge(age);
+        myAuthentication.setNeedSave(true);
 
         return new ModelAndView("redirect:" + siteUrl + "/profile/home");
     }

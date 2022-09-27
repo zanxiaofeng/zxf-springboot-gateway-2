@@ -29,6 +29,7 @@ public class SecurityUtils {
         Cookie tokenCookie = new Cookie("Token", tokenId);
         tokenCookie.setMaxAge(3600 * 3);
         tokenCookie.setPath("/");
+        //Maybe Need Https
         tokenCookie.setSecure(true);
         tokenCookie.setHttpOnly(true);
         response.addCookie(tokenCookie);
@@ -43,8 +44,8 @@ public class SecurityUtils {
         return ((MyAuthentication) SecurityContextHolder.getContext().getAuthentication()).getAccessToken();
     }
 
-    public static MyAuthentication.MyUser getCurrentUser() {
+    public static MyAuthentication getMyAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return (MyAuthentication.MyUser) authentication.getPrincipal();
+        return (MyAuthentication) authentication;
     }
 }

@@ -60,7 +60,7 @@ public class AuthController {
         ModelAndView modelAndView = new ModelAndView("logon-succeed-page");
         modelAndView.addObject(MODEL_AND_VIEW_OBJECT_KEY_SITE_URL, siteUrl);
         modelAndView.addObject(MODEL_AND_VIEW_OBJECT_KEY_SESSION_ID, session.getId());
-        modelAndView.addObject(MODEL_AND_VIEW_OBJECT_KEY_PRINCIPAL, SecurityUtils.getCurrentUser());
+        modelAndView.addObject(MODEL_AND_VIEW_OBJECT_KEY_PRINCIPAL, SecurityUtils.getMyAuthentication().getMyUser());
         return modelAndView;
     }
 
