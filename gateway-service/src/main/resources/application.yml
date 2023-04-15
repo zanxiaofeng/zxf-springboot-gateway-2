@@ -1,11 +1,30 @@
 server:
   port: 8088
 
+logging:
+  level:
+    reactor.netty: DEBUG
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.http.server.reactive: DEBUG
+    org.springframework.web.reactive: DEBUG
+    org.springframework.security: TRACE
+
 spring:
   application:
     name: gateway-service
   cloud:
     gateway:
+      httpserver:
+        wiretap: true
+      httpclient:
+        wiretap: true
+        connect-timeout: 5000
+        response-timeout: 60000
+        pool:
+          acquire-timeout: 60000
+          max-connections: 10000
+          max-idle-time: 1000
+          type: fixed
       routes:
         - id: auth-service
           uri: http://localhost:8080
