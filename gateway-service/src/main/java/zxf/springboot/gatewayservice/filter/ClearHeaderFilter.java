@@ -12,6 +12,7 @@ public class ClearHeaderFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         exchange.getResponse().beforeCommit(() -> {
+            System.out.printf("ClearHeaderFilter");
             exchange.getResponse().getHeaders().remove("Un-Used-Key");
             return Mono.empty();
         });
