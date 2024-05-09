@@ -1,5 +1,6 @@
 package zxf.springboot.gateway.support.httpforward;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpResponse;
@@ -8,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 
+@Slf4j
 public class HttpForwarder {
     private final HttpForwardPreProcessor httpForwardPreProcessor;
     private final HttpForwardPostProcessor httpForwardPostProcessor;
