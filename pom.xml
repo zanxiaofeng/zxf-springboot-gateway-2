@@ -20,6 +20,7 @@
         <module>auth-common</module>
         <module>auth-service</module>
         <module>gateway-service</module>
+        <module>gateway-service-2</module>
     </modules>
 
     <properties>
