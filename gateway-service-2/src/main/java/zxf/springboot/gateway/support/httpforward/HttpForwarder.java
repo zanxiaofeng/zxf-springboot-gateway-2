@@ -8,6 +8,7 @@ import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @Slf4j
 public class HttpForwarder {
@@ -35,10 +36,14 @@ public class HttpForwarder {
             responseEntity = createRestTemplate().exchange(requestEntity, byte[].class);
             log.info("Request: {} {}", requestEntity.getMethod(), requestEntity.getUrl());
             log.info("{}", requestEntity.getHeaders());
-            log.info("{}", requestEntity.getBody());
+            if (!Objects.isNull(requestEntity.getBody())) {
+                log.info("{}", new String(requestEntity.getBody()));
+            }
             log.info("Response: {}", responseEntity.getStatusCode());
             log.info("{}", responseEntity.getHeaders());
-            log.info("{}", responseEntity.getBody());
+            if (!Objects.isNull(responseEntity.getBody())) {
+                log.info("{}", new String(responseEntity.getBody()));
+            }
         } catch (Exception ex) {
             throw new HttpForwardException("Exception on forward process", ex);
         }
