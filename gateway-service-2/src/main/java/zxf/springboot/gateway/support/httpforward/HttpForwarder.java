@@ -8,6 +8,7 @@ import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
@@ -34,15 +35,19 @@ public class HttpForwarder {
         ResponseEntity<byte[]> responseEntity;
         try {
             responseEntity = createRestTemplate().exchange(requestEntity, byte[].class);
-            log.info("Request: {} {}", requestEntity.getMethod(), requestEntity.getUrl());
-            log.info("{}", requestEntity.getHeaders());
-            if (!Objects.isNull(requestEntity.getBody())) {
-                log.info("{}", new String(requestEntity.getBody()));
+            log.info("> {} {}", requestEntity.getMethod(), requestEntity.getUrl());
+            for (Map.Entry<String, String> entry : requestEntity.getHeaders().toSingleValueMap().entrySet()) {
+                log.info("> {}: {}", entry.getKey(), entry.getValue());
             }
-            log.info("Response: {}", responseEntity.getStatusCode());
-            log.info("{}", responseEntity.getHeaders());
+            if (!Objects.isNull(requestEntity.getBody())) {
+                log.info(">>\n{}", new String(requestEntity.getBody()));
+            }
+            log.info("< HTTP/1.1 {}", responseEntity.getStatusCode());
+            for (Map.Entry<String, String> entry : responseEntity.getHeaders().toSingleValueMap().entrySet()) {
+                log.info("< {}: {}", entry.getKey(), entry.getValue());
+            }
             if (!Objects.isNull(responseEntity.getBody())) {
-                log.info("{}", new String(responseEntity.getBody()));
+                log.info("<<\n{}", new String(responseEntity.getBody()));
             }
         } catch (Exception ex) {
             throw new HttpForwardException("Exception on forward process", ex);
