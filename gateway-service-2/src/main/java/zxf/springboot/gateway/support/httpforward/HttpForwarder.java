@@ -33,6 +33,12 @@ public class HttpForwarder {
         ResponseEntity<byte[]> responseEntity;
         try {
             responseEntity = createRestTemplate().exchange(requestEntity, byte[].class);
+            log.info("Request: {} {}", requestEntity.getMethod(), requestEntity.getUrl());
+            log.info("{}", requestEntity.getHeaders());
+            log.info("{}", requestEntity.getBody());
+            log.info("Response: {}", responseEntity.getStatusCode());
+            log.info("{}", responseEntity.getHeaders());
+            log.info("{}", responseEntity.getBody());
         } catch (Exception ex) {
             throw new HttpForwardException("Exception on forward process", ex);
         }
