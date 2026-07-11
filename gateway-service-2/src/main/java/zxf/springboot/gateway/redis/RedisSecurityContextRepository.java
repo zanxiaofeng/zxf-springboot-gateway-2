@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 import zxf.springboot.authentication.MyAuthentication;
 import zxf.springboot.gateway.security.SecurityUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Service("redisSecurityContextRepository")
 public class RedisSecurityContextRepository implements SecurityContextRepository {

@@ -14,7 +14,7 @@ public class E2ETrustTokenGenerator implements HttpForwardPreProcessor {
 
     @Override
     public RequestEntity<byte[]> apply(RequestEntity<byte[]> originalRequest) {
-        HttpHeaders newHttpHeaders = HttpHeaders.writableHttpHeaders(originalRequest.getHeaders());
+        HttpHeaders newHttpHeaders = HttpHeaders.copyOf(originalRequest.getHeaders());
         newHttpHeaders.add("X-E2E-Trust-Token", e2ETrustTokenService.getE2ETrustToken(SecurityUtils.getCurrentAccessToken()));
         return new RequestEntity<>(originalRequest.getBody(), newHttpHeaders, originalRequest.getMethod(), originalRequest.getUrl());
     }

@@ -25,7 +25,7 @@ public interface HttpForwardPreProcessor extends UnaryOperator<RequestEntity<byt
 
     static HttpForwardPreProcessor extraHeaderPreProcess(String httpHeaderName, String httpHeaderValue) {
         return originalRequest -> {
-            HttpHeaders newHttpHeaders = HttpHeaders.writableHttpHeaders(originalRequest.getHeaders());
+            HttpHeaders newHttpHeaders = HttpHeaders.copyOf(originalRequest.getHeaders());
             newHttpHeaders.remove(httpHeaderName);
             newHttpHeaders.add(httpHeaderName, httpHeaderValue);
             return new RequestEntity<>(originalRequest.getBody(), newHttpHeaders, originalRequest.getMethod(), originalRequest.getUrl());
@@ -34,7 +34,7 @@ public interface HttpForwardPreProcessor extends UnaryOperator<RequestEntity<byt
 
     static HttpForwardPreProcessor clearHeadersPreProcess(String... httpHeaderNames) {
         return originalRequest -> {
-            HttpHeaders newHttpHeaders = HttpHeaders.writableHttpHeaders(originalRequest.getHeaders());
+            HttpHeaders newHttpHeaders = HttpHeaders.copyOf(originalRequest.getHeaders());
             for (int i = 0; i < httpHeaderNames.length; i++) {
                 newHttpHeaders.remove(httpHeaderNames[i]);
             }

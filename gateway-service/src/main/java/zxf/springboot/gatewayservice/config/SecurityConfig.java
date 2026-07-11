@@ -25,23 +25,20 @@ public class SecurityConfig {
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
-        http.formLogin().disable()
-                .httpBasic().disable()
-                .logout().disable()
-                .csrf().disable();
-
-        ServerHttpSecurity.AuthorizeExchangeSpec authorizeExchange = http.authorizeExchange();
-        authorizeExchange.pathMatchers(securityProperties.getAuthorize().getPermitAll()).permitAll();
-        securityProperties.getAuthorize().getHasAnyAuthority().forEach(settings ->
-                authorizeExchange.pathMatchers(settings[0])
-                        .hasAnyAuthority(Arrays.copyOfRange(settings, 1, settings.length))
-        );
-        authorizeExchange.anyExchange().authenticated();
-
-        http.exceptionHandling()
-                .authenticationEntryPoint(authenticationEntryPoint());
-
-        http.securityContextRepository(redisSecurityContextRepository);
+        http.csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
+                .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
+                .logout(ServerHttpSecurity.LogoutSpec::disable)
+                .securityContextRepository(redisSecurityContextRepository)
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(authenticationEntryPoint()))
+                .authorizeExchange(exchange -> {
+                    exchange.pathMatchers(securityProperties.getAuthorize().getPermitAll()).permitAll();
+                    securityProperties.getAuthorize().getHasAnyAuthority().forEach(settings ->
+                            exchange.pathMatchers(settings[0])
+                                    .hasAnyAuthority(Arrays.copyOfRange(settings, 1, settings.length))
+                    );
+                    exchange.anyExchange().authenticated();
+                });
 
         return http.build();
     }

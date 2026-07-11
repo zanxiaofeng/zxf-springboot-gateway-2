@@ -23,7 +23,7 @@ public interface HttpForwardPostProcessor extends UnaryOperator<ResponseEntity<b
 
     static HttpForwardPostProcessor clearHeadersPostProcess(String... httpHeaderNames) {
         return originalResponse -> {
-            HttpHeaders newHttpHeaders = HttpHeaders.writableHttpHeaders(originalResponse.getHeaders());
+            HttpHeaders newHttpHeaders = HttpHeaders.copyOf(originalResponse.getHeaders());
             for (int i = 0; i < httpHeaderNames.length; i++) {
                 newHttpHeaders.remove(httpHeaderNames[i]);
             }

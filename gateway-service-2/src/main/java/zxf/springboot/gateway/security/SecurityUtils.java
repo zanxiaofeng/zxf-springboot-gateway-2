@@ -4,8 +4,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.util.WebUtils;
 import zxf.springboot.authentication.MyAuthentication;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import java.time.ZonedDateTime;
 
 public class SecurityUtils {
